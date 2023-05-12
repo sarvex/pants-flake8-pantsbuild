@@ -80,7 +80,7 @@ class Visitor(ast.NodeVisitor):
 
     def check_for_pb11_and_pb12(self, bool_op_node: ast.BoolOp) -> None:
         def is_constant(expr):
-            return isinstance(expr, (ast.Num, ast.Str)) or isinstance(expr, ast.NameConstant)
+            return isinstance(expr, (ast.Num, ast.Str, ast.NameConstant))
 
         if not isinstance(bool_op_node.op, (ast.And, ast.Or)):
             return
@@ -167,7 +167,7 @@ class IndentationPlugin(OptionalPlugin):
     def check_for_pb20(self, tokens) -> None:
         indents: List[str] = []
         for token in tokens:
-            token_type, token_text, token_start = token[0:3]
+            token_type, token_text, token_start = token[:3]
             if token_type is tokenize.DEDENT:
                 indents.pop()
             if token_type is tokenize.INDENT:
@@ -209,7 +209,7 @@ class TrailingSlashesPlugin(OptionalPlugin):
         # comments and strings
         exception_map = defaultdict(list)
         for token in tokens:
-            token_type, _, token_start, token_end = token[0:4]
+            token_type, _, token_start, token_end = token[:4]
             if token_type not in (tokenize.COMMENT, tokenize.STRING):
                 continue
             token_start_line, token_start_col_offset = token_start
